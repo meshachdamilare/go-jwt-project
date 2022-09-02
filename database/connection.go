@@ -1,4 +1,4 @@
-package db
+package database
 
 import (
 	"context"
@@ -36,7 +36,7 @@ func InitMongoDB() *mongo.Client {
 	return client
 }
 
-var client *mongo.Client = InitMongoDB()
+var Client *mongo.Client = InitMongoDB()
 
 func OpenCollection(client *mongo.Client, collectName string) *mongo.Collection {
 	db_name := os.Getenv("DATABASE_NAME")
