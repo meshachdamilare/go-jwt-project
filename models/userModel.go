@@ -15,7 +15,7 @@ type User struct {
 	Phone      *string            `json:"phone" validate:"required"`
 	Token      *string            `json:"token"`
 	// create an enum of choice of admin or user like in javascript
-	User_type     *string   `json:"usert_type" validate:"required,eq=AMIN|eq=USER"`
+	User_type     *string   `json:"user_type" validate:"required,eq=AMIN|eq=USER"`
 	Refresh_token *string   `json:"refresh_token"`
 	Created_at    time.Time `json:"created_at"`
 	Updated_at    time.Time `json:"updated_at"`
