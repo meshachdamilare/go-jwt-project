@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/Christomesh/go-jwt-project/database"
@@ -106,7 +107,49 @@ func Signup() gin.HandlerFunc {
 	}
 }
 
-func GetAllUsers()
+func GetAllUsers() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+		defer cancel()
+		if err := helper.CheckUserType(c, "ADMIN"); err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"errror": err.Error()})
+			return
+		}
+		recordPerPage, err := strconv.Atoi(c.Query("recordPerPage"))
+		if err != nil || recordPerPage < 1 {
+			recordPerPage = 10
+		}
+		page, err := strconv.Atoi(c.Query("page"))
+		if err != nil || page < 1 {
+			page = 1
+		}
+		startIndex := (page - 1) * recordPerPage
+		startIndex, err = strconv.Atoi(c.Query("startIndex"))
+
+		matchStage := bson.D{{"$match", bson.D{{}}}}
+		groupSatage := bson.D{{"$group", bson.D{
+			{"_id", bson.D{{"_id", "null"}}},
+			{"total_count", bson.D{{"$sum", 1}}},
+			{"data", bson.D{{"$push", "$ROOT"}}}}}}
+		projectStage := bson.D{
+			{"$project", bson.D{
+				{"_id", 0},
+				{"total_count", 1},
+				{"user_items", bson.D{{"$slice", []interface{}{"$data", startIndex, recordPerPage}}}}}}}
+		result, err := userCollection.Aggregate(ctx, mongo.Pipeline{
+			matchStage, groupSatage, projectStage})
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "error occured while listing items"})
+		}
+		var allUsers []bson.M
+		if err := result.All(ctx, &allUsers); err != nil {
+			log.Fatal(err)
+			return
+		}
+		c.JSON(http.StatusOK, allUsers[0])
+
+	}
+}
 
 func GetUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
