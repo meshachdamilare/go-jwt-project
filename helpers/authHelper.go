@@ -2,7 +2,6 @@ package helpers
 
 import (
 	"errors"
-	"fmt"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -39,11 +38,11 @@ func HashPassword(password string) string {
 }
 
 func VerifyPassword(userPassword string, providedPassword string) (bool, string) {
-	err := bcrypt.CompareHashAndPassword([]byte(providedPassword), []byte(providedPassword))
+	err := bcrypt.CompareHashAndPassword([]byte(providedPassword), []byte(userPassword))
 	check := true
 	msg := ""
 	if err != nil {
-		msg = fmt.Sprintf("email or password incorrect")
+		msg = "Incorrect password incorrect"
 		check = false
 	}
 	return check, msg
