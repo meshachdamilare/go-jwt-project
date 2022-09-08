@@ -25,7 +25,7 @@ func catchError(err error, msg string) {
 func InitMongoDB() *mongo.Client {
 	err := godotenv.Load(".env")
 	catchError(err, "Error loading .env file")
-	MongodbURL := os.Getenv("MONGOURL")
+	MongodbURL := os.Getenv("MONGODB_URL")
 	client, err := mongo.NewClient(options.Client().ApplyURI(MongodbURL))
 	catchError(err, "")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -39,7 +39,7 @@ func InitMongoDB() *mongo.Client {
 var Client *mongo.Client = InitMongoDB()
 
 func OpenCollection(client *mongo.Client, collectName string) *mongo.Collection {
-	db_name := os.Getenv("DATABASE_NAME")
-	var collection *mongo.Collection = (*mongo.Collection)(client.Database(db_name)).Database().Collection(collectName)
+
+	var collection *mongo.Collection = (*mongo.Collection)(client.Database(os.Getenv("DATABASE_NAME")).Collection(collectName))
 	return collection
 }
