@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"errors"
+	"fmt"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -10,8 +11,10 @@ import (
 
 func CheckUserType(c *gin.Context, role string) (err error) {
 	userType := c.GetString("user_type")
+	fmt.Println("UserType", userType)
+	err = nil
 	if userType != role {
-		err = errors.New("Unauthorized to access this routes")
+		err = errors.New("unauthorized to access this route")
 		return err
 	}
 	return err
@@ -22,7 +25,7 @@ func MatchUserTypeToUid(c *gin.Context, userId string) (err error) {
 	uid := c.GetString("uid")
 	err = nil
 	if userType == "USER" && uid != userId {
-		err = errors.New("Unauthorized to access this routes")
+		err = errors.New("unauthorized to access this routes")
 		return err
 	}
 	err = CheckUserType(c, userType)

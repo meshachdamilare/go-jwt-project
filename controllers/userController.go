@@ -51,7 +51,7 @@ func Login() gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "user not found"})
 			return
 		}
-		token, refreshToken, _ := helper.GenerateAllTokens(foundUser.Email, foundUser.User_id)
+		token, refreshToken, _ := helper.GenerateAllTokens(foundUser.Email, foundUser.User_id, foundUser.User_type)
 		helper.UpdateAllTokens(token, refreshToken, foundUser.User_id)
 		c.JSON(http.StatusOK, foundUser)
 
@@ -101,7 +101,7 @@ func Signup() gin.HandlerFunc {
 		user.ID = primitive.NewObjectID()
 		user.User_id = user.ID.Hex()
 
-		token, refreshToken, _ := helper.GenerateAllTokens(user.Email, user.User_id)
+		token, refreshToken, _ := helper.GenerateAllTokens(user.Email, user.User_id, user.User_type)
 		user.Token = token
 		user.Refresh_token = refreshToken
 
@@ -138,28 +138,32 @@ func GetAllUsers() gin.HandlerFunc {
 		startIndex, err = strconv.Atoi(c.Query("startIndex"))
 
 		matchStage := bson.D{{"$match", bson.D{{}}}}
-		groupSatage := bson.D{{"$group", bson.D{
+
+		groupStage := bson.D{{"$group", bson.D{
 			{"_id", bson.D{{"_id", "null"}}},
 			{"total_count", bson.D{{"$sum", 1}}},
-			{"data", bson.D{{"$push", "$ROOT"}}}}}}
+			{"data", bson.D{{"$push", "$$ROOT"}}}}}}
+
 		projectStage := bson.D{
 			{"$project", bson.D{
 				{"_id", 0},
 				{"total_count", 1},
 				{"user_items", bson.D{{"$slice", []interface{}{"$data", startIndex, recordPerPage}}}}}}}
-		result, err := userCollection.Aggregate(ctx, mongo.Pipeline{
-			matchStage, groupSatage, projectStage})
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "error occured while listing items"})
-			return
-		}
-		var allUsers []bson.M
-		if err := result.All(ctx, &allUsers); err != nil {
-			log.Fatal(err)
-			return
-		}
-		c.JSON(http.StatusOK, allUsers[0])
 
+		result, err := userCollection.Aggregate(ctx, mongo.Pipeline{
+			matchStage, groupStage, projectStage})
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "error occured while listing user items"})
+		}
+
+		var allusers []bson.M
+
+		if err = result.All(ctx, &allusers); err != nil {
+			log.Fatal(err)
+		}
+
+		c.JSON(http.StatusOK, allusers[0])
 	}
 }
 
