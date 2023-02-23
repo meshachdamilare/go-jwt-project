@@ -6,8 +6,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/Christomesh/go-jwt-project/database"
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/meshachdamilare/go-jwt-project/database"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"

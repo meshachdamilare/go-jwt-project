@@ -1,9 +1,9 @@
 package routes
 
 import (
-	controller "github.com/Christomesh/go-jwt-project/controllers"
-	"github.com/Christomesh/go-jwt-project/middleware"
 	"github.com/gin-gonic/gin"
+	controller "github.com/meshachdamilare/go-jwt-project/controllers"
+	"github.com/meshachdamilare/go-jwt-project/middleware"
 )
 
 func UserRoutes(incomingRoutes *gin.Engine) {

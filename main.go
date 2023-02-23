@@ -3,8 +3,8 @@ package main
 import (
 	"os"
 
-	"github.com/Christomesh/go-jwt-project/routes"
 	"github.com/gin-gonic/gin"
+	"github.com/meshachdamilare/go-jwt-project/routes"
 )
 
 func main() {

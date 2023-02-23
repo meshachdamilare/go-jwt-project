@@ -7,11 +7,10 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/Christomesh/go-jwt-project/database"
-	helper "github.com/Christomesh/go-jwt-project/helpers"
-	"github.com/Christomesh/go-jwt-project/models"
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
+	"github.com/meshachdamilare/go-jwt-project/database"
+	helper "github.com/meshachdamilare/go-jwt-project/helpers"
+	"github.com/meshachdamilare/go-jwt-project/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -54,7 +53,6 @@ func Login() gin.HandlerFunc {
 		token, refreshToken, _ := helper.GenerateAllTokens(foundUser.Email, foundUser.User_id, foundUser.User_type)
 		helper.UpdateAllTokens(token, refreshToken, foundUser.User_id)
 		c.JSON(http.StatusOK, foundUser)
-
 	}
 }
 

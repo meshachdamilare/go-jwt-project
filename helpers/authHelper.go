@@ -25,7 +25,7 @@ func MatchUserTypeToUid(c *gin.Context, userId string) (err error) {
 	uid := c.GetString("uid")
 	err = nil
 	if userType == "USER" && uid != userId {
-		err = errors.New("unauthorized to access this routes")
+		err = errors.New("unauthorized to access this route")
 		return err
 	}
 	err = CheckUserType(c, userType)

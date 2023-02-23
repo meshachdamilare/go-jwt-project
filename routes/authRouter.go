@@ -1,8 +1,8 @@
 package routes
 
 import (
-	controller "github.com/Christomesh/go-jwt-project/controllers"
 	"github.com/gin-gonic/gin"
+	controller "github.com/meshachdamilare/go-jwt-project/controllers"
 )
 
 func AuthRoutes(incomingRoutes *gin.Engine) {
